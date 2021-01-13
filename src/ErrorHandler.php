@@ -22,7 +22,7 @@ class ErrorHandler
         'cannot_delete_non_empty_bucket' => BucketNotEmptyException::class,
     ];
 
-    public static function handleErrorResponse(Response $response)
+    public static function handleErrorResponse(Response $response, $method = '' )
     {
         $responseJson = json_decode($response->getBody(), true);
 
@@ -33,6 +33,6 @@ class ErrorHandler
             $exceptionClass = B2Exception::class;
         }
 
-        throw new $exceptionClass(sprintf('Received error from B2: %s. Code: %s', $responseJson['message'], $responseJson['code']));
+        throw new $exceptionClass(sprintf('Received error from B2: %s. Code: %s. Method: %s', $responseJson['message'], $responseJson['code'], empty($method) ? 'Unknown' : $method));
     }
 }

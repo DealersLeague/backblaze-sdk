@@ -15,15 +15,18 @@ class Client extends GuzzleClient
     public $retryLimit   = 10;
     public $retryWaitSec = 10;
 
-    /**
-     * Sends a response to the B2 API, automatically handling decoding JSON and errors.
-     *
-     * @param string $method
-     * @param null $uri
-     * @param array $options
-     * @param bool $asJson
-     * @return mixed|string
-     */
+	/**
+	 * Sends a response to the B2 API, automatically handling decoding JSON and errors.
+	 *
+	 * @param $method
+	 * @param null $uri
+	 * @param array $options
+	 * @param bool $asJson
+	 * @param bool $wantsGetContents
+	 *
+	 * @return mixed
+	 * @throws \dealersleague\B2\Exceptions\B2Exception
+	 */
     public function request($method, $uri = null, array $options = [], $asJson = true, $wantsGetContents = true)
     {
         $response = parent::request($method, $uri, $options);
@@ -39,7 +42,7 @@ class Client extends GuzzleClient
             $wait *= 1.2;
         }
         if ($response->getStatusCode() !== 200) {
-            ErrorHandler::handleErrorResponse($response);
+            ErrorHandler::handleErrorResponse($response, $method);
         }
 
         if ($asJson) {
